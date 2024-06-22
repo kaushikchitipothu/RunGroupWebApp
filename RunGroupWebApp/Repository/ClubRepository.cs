@@ -31,7 +31,7 @@ namespace RunGroupWebApp.Repository
 
         public async Task<Club> GetByIdAsync(int id)
         {
-            return await _dbContext.Clubs.FirstOrDefaultAsync(c => c.Id == id);
+            return await _dbContext.Clubs.Include(i => i.Address).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<IEnumerable<Club>> GetClubByCity(string city)
