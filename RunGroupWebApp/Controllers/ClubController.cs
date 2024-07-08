@@ -119,5 +119,33 @@ namespace RunGroupWebApp.Controllers
             _clubRepository.Update(club);
             return RedirectToAction("Index");
         }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var res = await _clubRepository.GetByIdAsync(id);
+            if (res == null)
+            {
+                return View("Error");
+            }
+            return View(res);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteClub(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            else
+            {
+                var res = await _clubRepository.GetByIdAsync(id);
+                if(res == null)
+                {
+                    return View("error");
+                }
+                _clubRepository.Delete(res);
+                return RedirectToAction("Index");
+            }
+        }
     }
 }
