@@ -38,7 +38,11 @@ namespace RunGroupWebApp.Controllers
                 bool checkPassword = await _userManager.CheckPasswordAsync(user,loginViewModel.Password);
                 if (checkPassword)
                 {
-                    return RedirectToAction("Index", "Race");
+                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Race");
+                    }
                 }
                 TempData["error"] = "Invalid Credentials, Please try again";
                 return View(loginViewModel);

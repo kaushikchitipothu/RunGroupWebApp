@@ -13,10 +13,12 @@ namespace RunGroupWebApp.Controllers
     {
         IRaceRepository _raceRepository;
         IPhotoService _photoService;
-        public RaceController(IRaceRepository raceRepository, IPhotoService photoService)
+        IHttpContextAccessor _httpContextAccessor;
+        public RaceController(IRaceRepository raceRepository, IPhotoService photoService, IHttpContextAccessor httpContextAccessor)
         {
             _raceRepository = raceRepository;
             _photoService = photoService;
+            _httpContextAccessor = httpContextAccessor; 
         }
         public async Task<IActionResult> Index()
         {
@@ -32,7 +34,9 @@ namespace RunGroupWebApp.Controllers
 
         public IActionResult Create()
         {
-          return View();
+            var user = _httpContextAccessor.HttpContext?.User.GetUserID();
+            var createRaceViewModel = new CreateRaceViewModel() { AppUserId = user };
+            return View(createRaceViewModel);
         }
 
         [HttpPost]
@@ -48,6 +52,7 @@ namespace RunGroupWebApp.Controllers
                     Image = result.Url.ToString(),
                     Title = raceVM.Title,
                     Description = raceVM.Description,
+                    AppUserId = raceVM.AppUserId,
                     Address = new Address
                     {
                         City = raceVM.Address.City,
