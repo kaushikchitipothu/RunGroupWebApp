@@ -1,4 +1,5 @@
-﻿using RunGroupWebApp.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using RunGroupWebApp.Data;
 using RunGroupWebApp.Interfaces;
 using RunGroupWebApp.Models;
 
@@ -25,6 +26,27 @@ namespace RunGroupWebApp.Repository
             var userId = _httpcontext.HttpContext?.User.GetUserID();
             var userRaces = _dbcontext.Races.Where(r => r.AppUserId == userId);
             return userRaces.ToList();
+        }
+
+        public async  Task<AppUser> getUserById(string id)
+        {
+            return await  _dbcontext.Users.FindAsync(id);
+        }
+
+        public async Task<AppUser> getUserByIdNoTracking(string id)
+        {
+            return await _dbcontext.Users.Where(r => r.Id == id).AsNoTracking().FirstOrDefaultAsync();
+        }
+        public bool save()
+        {
+            var save = _dbcontext.SaveChanges();
+            return save == 0 ? true : false;
+        }
+
+        public bool update(AppUser user)
+        {
+            _dbcontext.Update(user);
+            return save();
         }
     }
 }
